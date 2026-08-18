@@ -13,8 +13,6 @@ Give it a model, a GPU/NPU, node count, precision, context length, concurrency a
 - **power**: idle / typical / peak (PUE-adjusted), energy per token
 - automatic **TP × PP × DP** strategy selection with reasoning
 
-Built against the DeepSeek Harness architecture docs (`docs/architecture.md`): a model-facing
-capability registered on `ctx.tools`, mounted as a bundle row in `cordis.patch.yml`.
 
 ## Install
 
@@ -25,7 +23,7 @@ dsh plugin --profile web add dsh-model-deploy
 Or from a GitHub checkout:
 
 ```sh
-dsh plugin --profile web add github:YOUR_ACCOUNT/dsh-model-deploy
+dsh plugin --profile web add github:lhwwxy/dsh-model-deploy
 ```
 
 > `--profile` is mandatory. The plugin registers two tools; restart the session
@@ -74,7 +72,8 @@ Lists supported models (id, params, layers, context limit) and GPUs/NPUs
 
 Architecture data comes from each model's published `config.json`
 (ModelScope/HuggingFace); hardware data from official datasheets and public
-spec tables. Sources are linked per entry in `dsh/data.js`.
+spec tables. Sources are linked per entry in `dsh/data.js`. Fields that vendors never published
+(e.g. Hanguang 800 bandwidth) are marked `~estimated` and flagged in reports.
 
 ## Estimation model (the honest part)
 
@@ -90,23 +89,14 @@ auditable, not magic:
 - power = TDP × duty ratios + 22% platform overhead, PUE 1.25
 - MoE expert all-to-all ×1.35 correction; PP bubble ×10%/stage
 
-Verification: the engine is pinned by **22 regression tests** including
-real-world anchors (70B BF16 on 8×H100 ≈ 150 tok/s; DeepSeek-V3 FP8 does not
-fit 8×80GB, INT4 does; Qwen3-8B INT4 on one RTX 4090 ≈ 170 tok/s) plus a
-NaN-free sweep across all 760 model×GPU combinations.
+Estimates are validated against real-world anchors (70B BF16 on 8×H100 ≈ 150 tok/s;
+DeepSeek-V3 FP8 does not fit 8×80GB, INT4 does; Qwen3-8B INT4 on one RTX 4090 ≈
+170 tok/s), plus a NaN-free sweep across all 760 model×GPU combinations.
 
 Non-CUDA NPUs are estimated at datasheet-ideal values; the tool flags that
 CANN/XPU/MUSA software-stack maturity varies — benchmark before purchase.
 
-## Development
-
-```sh
-npm test        # node --test (no dependencies)
-```
-
-`dsh/` is plain dependency-free ESM. Engine logic is shared with the
-[companion website](https://github.com/YOUR_ACCOUNT/dsh-model-deploy/tree/main#companion-site)
-(not required for the plugin).
+**Development, testing and release flow (maintainers): see [docs/MAINTAINING.md](./docs/MAINTAINING.md).**
 
 ## License
 

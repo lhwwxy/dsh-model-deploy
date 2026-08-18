@@ -13,8 +13,6 @@ DeepSeek Harness（DSH）插件：**LLM 模型选型部署分析**。
 - **功耗**：空闲 / 典型 / 峰值（含 PUE）、每 token 能耗
 - 自动 **TP × PP × DP** 并行策略与选择理由
 
-按 DeepSeek Harness 架构文档（`docs/architecture.md`）实现：模型可见能力注册在
-`ctx.tools`，以 bundle 行的形式挂载（`cordis.patch.yml`）。
 
 ## 安装
 
@@ -25,7 +23,7 @@ dsh plugin --profile web add dsh-model-deploy
 或从 GitHub 检出安装：
 
 ```sh
-dsh plugin --profile web add github:YOUR_ACCOUNT/dsh-model-deploy
+dsh plugin --profile web add github:lhwwxy/dsh-model-deploy
 ```
 
 > `--profile` 必填。安装后重启会话（或 profile），工具 schema 才会进入 prompt 组装。
@@ -87,30 +85,14 @@ FP16/FP8/INT8/FP4、互联、TDP），支持 `query`/`vendor` 过滤。先用它
 - 功耗 = TDP × 负载比例 + 22% 平台开销，PUE 1.25
 - MoE 专家路由通信 ×1.35 修正；PP 每级气泡 10%
 
-引擎由 **22 项回归测试**锁定，包含真实部署锚点（70B BF16 在 8×H100 ≈ 150 tok/s；
-DeepSeek-V3 FP8 放不进 8×80G、INT4 可以；Qwen3-8B INT4 单 4090 ≈ 170 tok/s），
-以及全部 760 个模型×GPU 组合的无 NaN 扫描。
+估算结果用真实部署锚点校验过（70B BF16 在 8×H100 ≈ 150 tok/s；DeepSeek-V3 FP8
+放不进 8×80G、INT4 可以；Qwen3-8B INT4 单 4090 ≈ 170 tok/s），并扫描全部 760 个
+模型×GPU 组合无异常。
 
 国产 NPU 按规格表理想值估算，工具会提示 CANN/XPU/MUSA 软件栈实际利用率有差异，
 正式采购前请用目标框架实测。
 
-## 开发
-
-```sh
-npm test        # node --test，零依赖
-```
-
-`dsh/` 为无运行时依赖的纯 ESM。估算引擎与配套网站（见同仓库 `README` 英文版
-“companion site”说明，可选）共用同一实现。
-
-## 发布（npm / GitHub / 插件目录）
-
-1. **npm**：`npm publish`（需 `npm adduser` 登录）
-2. **GitHub**：建仓 `dsh-model-deploy` 后 `git push`，目录站会同步元数据
-3. **DSH 插件目录**：到 <https://dshmarketplace.dev/submit> 提交收录（人工审核），
-   或在 [DshMarketPlace/dshmarketplace](https://github.com/DshMarketPlace/dshmarketplace)
-   提 issue
-4. （可选）发到 LINUX DO 社区可获得 verified 徽章
+**开发、测试与发布流程（维护者）见 [docs/MAINTAINING.md](./docs/MAINTAINING.md)。**
 
 ## License
 
