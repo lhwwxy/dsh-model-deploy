@@ -1,0 +1,104 @@
+// 数据集：38 个模型 + 20 款 GPU/NPU（规格来自 ModelScope config.json、NVIDIA/AMD/华为等官方公开资料）
+
+
+  // ---- 模型数据 ----
+  // 字段: totalB 总参数(十亿), activeB 激活参数(MoE 时为 null 表示稠密), layers 层数,
+  //       kvHeads/headDim (GQA 模型 KV 结构), attnHeads (张量并行上限), hiddenSize,
+  //       mla: MLA 压缩 KV 模型 (kvLoraRank + ropeDim), maxCtx 官方最大上下文
+  export const MODELS = [
+    { id: 'qwen3-0.6b',  name: 'Qwen3-0.6B',  org: '阿里 Qwen', family: 'Qwen3', dense: true,  totalB: 0.6,   activeB: null, layers: 28, kvHeads: 8,  headDim: 128, attnHeads: 16,  hiddenSize: 1024, maxCtx: 32768,  ctxNote: '官方 32K',  src: 'https://hf-mirror.com/Qwen/Qwen3-0.6B' },
+    { id: 'qwen3-4b',    name: 'Qwen3-4B',    org: '阿里 Qwen', family: 'Qwen3', dense: true,  totalB: 4.0,   activeB: null, layers: 36, kvHeads: 8,  headDim: 128, attnHeads: 32,  hiddenSize: 2560, maxCtx: 32768,  ctxNote: '官方 32K',  src: 'https://hf-mirror.com/Qwen/Qwen3-4B' },
+    { id: 'qwen3-8b',    name: 'Qwen3-8B',    org: '阿里 Qwen', family: 'Qwen3', dense: true,  totalB: 8.2,   activeB: null, layers: 36, kvHeads: 8,  headDim: 128, attnHeads: 32,  hiddenSize: 4096, maxCtx: 131072, ctxNote: '官方 128K', src: 'https://hf-mirror.com/Qwen/Qwen3-8B' },
+    { id: 'qwen3-14b',   name: 'Qwen3-14B',   org: '阿里 Qwen', family: 'Qwen3', dense: true,  totalB: 14.8,  activeB: null, layers: 40, kvHeads: 8,  headDim: 128, attnHeads: 40,  hiddenSize: 5120, maxCtx: 131072, ctxNote: '官方 128K', src: 'https://hf-mirror.com/Qwen/Qwen3-14B' },
+    { id: 'qwen3-30b-a3b', name: 'Qwen3-30B-A3B', org: '阿里 Qwen', family: 'Qwen3', dense: false, totalB: 30.5, activeB: 3.2, layers: 48, kvHeads: 4, headDim: 128, attnHeads: 32, hiddenSize: 2048, maxCtx: 131072, ctxNote: '官方 128K · 128 专家 Top-8', src: 'https://hf-mirror.com/Qwen/Qwen3-30B-A3B' },
+    { id: 'qwen3-32b',   name: 'Qwen3-32B',   org: '阿里 Qwen', family: 'Qwen3', dense: true,  totalB: 32.8,  activeB: null, layers: 64, kvHeads: 8,  headDim: 128, attnHeads: 64,  hiddenSize: 5120, maxCtx: 131072, ctxNote: '官方 128K', src: 'https://hf-mirror.com/Qwen/Qwen3-32B' },
+    { id: 'qwen3-235b-a22b', name: 'Qwen3-235B-A22B', org: '阿里 Qwen', family: 'Qwen3', dense: false, totalB: 235, activeB: 22, layers: 94, kvHeads: 4, headDim: 128, attnHeads: 64, hiddenSize: 4096, maxCtx: 131072, ctxNote: '官方 128K · 128 专家 Top-8', src: 'https://hf-mirror.com/Qwen/Qwen3-235B-A22B' },
+    { id: 'llama31-8b',  name: 'Llama 3.1 8B', org: 'Meta', family: 'Llama 3', dense: true,  totalB: 8.0,   activeB: null, layers: 32, kvHeads: 8,  headDim: 128, attnHeads: 32,  hiddenSize: 4096, maxCtx: 131072, ctxNote: '官方 128K', src: 'https://hf-mirror.com/unsloth/Llama-3.1-8B-Instruct' },
+    { id: 'llama33-70b', name: 'Llama 3.3 70B', org: 'Meta', family: 'Llama 3', dense: true,  totalB: 70.6,  activeB: null, layers: 80, kvHeads: 8,  headDim: 128, attnHeads: 64,  hiddenSize: 8192, maxCtx: 131072, ctxNote: '官方 128K', src: 'https://hf-mirror.com/unsloth/Llama-3.3-70B-Instruct-bnb-4bit' },
+    { id: 'llama31-405b', name: 'Llama 3.1 405B', org: 'Meta', family: 'Llama 3', dense: true, totalB: 405,   activeB: null, layers: 126, kvHeads: 8, headDim: 128, attnHeads: 128, hiddenSize: 16384, maxCtx: 131072, ctxNote: '官方 128K', src: 'https://hf-mirror.com/meta-llama/Llama-3.1-405B-Instruct' },
+    { id: 'llama4-scout', name: 'Llama 4 Scout', org: 'Meta', family: 'Llama 4', dense: false, totalB: 109, activeB: 17, layers: 48, kvHeads: 8, headDim: 128, attnHeads: 40, hiddenSize: 5120, maxCtx: 10485760, ctxNote: '官方 10M（需 iRoPE + KV 量化）· 16 专家 Top-1', src: 'https://hf-mirror.com/mlx-community/Llama-4-Scout-17B-16E-Instruct-4bit' },
+    { id: 'llama4-maverick', name: 'Llama 4 Maverick', org: 'Meta', family: 'Llama 4', dense: false, totalB: 400, activeB: 17, layers: 48, kvHeads: 8, headDim: 128, attnHeads: 40, hiddenSize: 5120, maxCtx: 1048576, ctxNote: '官方 1M · 128 专家 Top-1', src: 'https://hf-mirror.com/chutesai/Llama-4-Maverick-17B-128E-Instruct' },
+    { id: 'deepseek-v3', name: 'DeepSeek-V3-0324', org: 'DeepSeek', family: 'DeepSeek', dense: false, totalB: 671, activeB: 37, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 128, hiddenSize: 7168, maxCtx: 163840, ctxNote: '官方 160K · MLA 压缩 KV · 256 专家 Top-8', src: 'https://hf-mirror.com/deepseek-ai/DeepSeek-V3-0324' },
+    { id: 'deepseek-r1', name: 'DeepSeek-R1-0528', org: 'DeepSeek', family: 'DeepSeek', dense: false, totalB: 671, activeB: 37, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 128, hiddenSize: 7168, maxCtx: 163840, ctxNote: '官方 160K · MLA · 推理模型(长思维链)', src: 'https://hf-mirror.com/deepseek-ai/DeepSeek-R1-0528' },
+    { id: 'kimi-k2', name: 'Kimi-K2-Instruct', org: '月之暗面', family: 'Kimi', dense: false, totalB: 1040, activeB: 32, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 128, hiddenSize: 7168, maxCtx: 131072, ctxNote: '官方 128K · MLA · 1.04T 总参数', src: 'https://hf-mirror.com/moonshotai/Kimi-K2-Instruct' },
+    { id: 'glm-4.5', name: 'GLM-4.5', org: '智谱 Z.ai', family: 'GLM', dense: false, totalB: 355, activeB: 32, layers: 92, kvHeads: 8, headDim: 128, attnHeads: 96, hiddenSize: 5120, maxCtx: 131072, ctxNote: '官方 128K · 128 专家 Top-8', src: 'https://hf-mirror.com/zai-org/GLM-4.5' },
+    { id: 'gpt-oss-20b', name: 'GPT-OSS-20B', org: 'OpenAI', family: 'GPT-OSS', dense: false, totalB: 22.4, activeB: 3.6, layers: 24, kvHeads: 8, headDim: 64, attnHeads: 64, hiddenSize: 2880, maxCtx: 131072, ctxNote: '官方 128K · 32 专家 Top-4', src: 'https://hf-mirror.com/openai/gpt-oss-20b' },
+    { id: 'gpt-oss-120b', name: 'GPT-OSS-120B', org: 'OpenAI', family: 'GPT-OSS', dense: false, totalB: 117, activeB: 5.1, layers: 36, kvHeads: 8, headDim: 64, attnHeads: 64, hiddenSize: 2880, maxCtx: 131072, ctxNote: '官方 128K · 128 专家 Top-4', src: 'https://hf-mirror.com/openai/gpt-oss-120b' },
+    { id: 'mixtral-8x7b', name: 'Mixtral 8x7B', org: 'Mistral AI', family: 'Mixtral', dense: false, totalB: 46.7, activeB: 12.9, layers: 32, kvHeads: 8, headDim: 128, attnHeads: 32, hiddenSize: 4096, maxCtx: 32768, ctxNote: '官方 32K · 8 专家 Top-2', src: 'https://hf-mirror.com/mistralai/Mixtral-8x7B-v0.1' },
+    { id: 'qwen2.5-72b', name: 'Qwen2.5-72B', org: '阿里 Qwen', family: 'Qwen2.5', dense: true, totalB: 72.7, activeB: null, layers: 80, kvHeads: 8, headDim: 128, attnHeads: 64, hiddenSize: 8192, maxCtx: 131072, ctxNote: '官方 128K (YaRN)', src: 'https://hf-mirror.com/Qwen/Qwen2.5-72B-Instruct' },
+
+    // ---- 2025-2026 新模型（ModelScope config 核实） ----
+    { id: 'qwen3-next', name: 'Qwen3-Next-80B-A3B', org: '阿里 Qwen', family: 'Qwen3', dense: false, totalB: 80, activeB: 3, layers: 48, kvHeads: 2, headDim: 256, attnHeads: 16, hiddenSize: 2048, maxCtx: 262144, ctxNote: '官方 256K · 512 专家 Top-10 · 混合注意力(16 全注意力 + 32 滑动窗口 32K)', slideLayers: 32, slideWindow: 32768, src: 'https://modelscope.cn/models/Qwen/Qwen3-Next-80B-A3B-Instruct' },
+    { id: 'qwen3-coder', name: 'Qwen3-Coder-480B-A35B', org: '阿里 Qwen', family: 'Qwen3', dense: false, totalB: 480, activeB: 35, layers: 62, kvHeads: 8, headDim: 128, attnHeads: 96, hiddenSize: 6144, maxCtx: 262144, ctxNote: '官方 256K · 代码专精 · 128 专家 Top-8', src: 'https://modelscope.cn/models/Qwen/Qwen3-Coder-480B-A35B-Instruct' },
+    { id: 'qwen3-vl', name: 'Qwen3-VL-235B-A22B', org: '阿里 Qwen', family: 'Qwen3', dense: false, totalB: 235, activeB: 22, layers: 94, kvHeads: 4, headDim: 128, attnHeads: 64, hiddenSize: 4096, maxCtx: 262144, ctxNote: '官方 256K · 多模态(VL) · 128 专家 Top-8', src: 'https://modelscope.cn/models/Qwen/Qwen3-VL-235B-A22B-Instruct' },
+    { id: 'qwq-32b', name: 'QwQ-32B', org: '阿里 Qwen', family: 'Qwen', dense: true, totalB: 32.8, activeB: null, layers: 64, kvHeads: 8, headDim: 128, attnHeads: 40, hiddenSize: 5120, maxCtx: 131072, ctxNote: '推理模型 · 官方 128K(YaRN)', src: 'https://modelscope.cn/models/Qwen/QwQ-32B' },
+    { id: 'qwen2.5-coder-32b', name: 'Qwen2.5-Coder-32B', org: '阿里 Qwen', family: 'Qwen2.5', dense: true, totalB: 32.8, activeB: null, layers: 64, kvHeads: 8, headDim: 128, attnHeads: 40, hiddenSize: 5120, maxCtx: 131072, ctxNote: '代码专精 · 官方 128K(YaRN)', src: 'https://modelscope.cn/models/Qwen/Qwen2.5-Coder-32B-Instruct' },
+    { id: 'glm-4.6', name: 'GLM-4.6', org: '智谱 Z.ai', family: 'GLM', dense: false, totalB: 355, activeB: 32, layers: 92, kvHeads: 8, headDim: 128, attnHeads: 96, hiddenSize: 5120, maxCtx: 202752, ctxNote: '官方 200K · 128 专家 Top-8', src: 'https://modelscope.cn/models/ZhipuAI/GLM-4.6' },
+    { id: 'glm-4.5-air', name: 'GLM-4.5-Air', org: '智谱 Z.ai', family: 'GLM', dense: false, totalB: 106, activeB: 12, layers: 46, kvHeads: 8, headDim: 128, attnHeads: 96, hiddenSize: 4096, maxCtx: 131072, ctxNote: '官方 128K · 小尺寸 MoE', src: 'https://modelscope.cn/models/ZhipuAI/GLM-4.5-Air' },
+    { id: 'glm-5', name: 'GLM-5', org: '智谱 Z.ai', family: 'GLM', dense: false, totalB: 744, activeB: 32, layers: 78, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 64, hiddenSize: 6144, maxCtx: 202752, ctxNote: '官方 200K · MLA + DSA 稀疏注意力 · 激活参数为核算值(~32B)', src: 'https://modelscope.cn/models/ZhipuAI/GLM-5' },
+    { id: 'deepseek-v3.1', name: 'DeepSeek-V3.1', org: 'DeepSeek', family: 'DeepSeek', dense: false, totalB: 671, activeB: 37, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 128, hiddenSize: 7168, maxCtx: 163840, ctxNote: '官方 160K · MLA · 256 专家 Top-8', src: 'https://modelscope.cn/models/deepseek-ai/DeepSeek-V3.1' },
+    { id: 'deepseek-v3.2', name: 'DeepSeek-V3.2-Exp', org: 'DeepSeek', family: 'DeepSeek', dense: false, totalB: 671, activeB: 37, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 128, hiddenSize: 7168, maxCtx: 163840, ctxNote: '官方 160K · MLA + DSA 稀疏注意力', src: 'https://modelscope.cn/models/deepseek-ai/DeepSeek-V3.2-Exp' },
+    { id: 'deepseek-v4-flash', name: 'DeepSeek-V4-Flash', org: 'DeepSeek', family: 'DeepSeek', dense: false, totalB: 284, activeB: 13, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 128, hiddenSize: 7168, maxCtx: 1048576, archEstimated: true, ctxNote: '官方 1M · DSA 稀疏注意力 · ⚠ 官方未公开 config，架构按 DeepSeekMoE 同源估算', src: 'https://modelscope.cn/models/deepseek-ai/DeepSeek-V4' },
+    { id: 'deepseek-v4-pro', name: 'DeepSeek-V4-Pro', org: 'DeepSeek', family: 'DeepSeek', dense: false, totalB: 1600, activeB: 49, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 128, hiddenSize: 7168, maxCtx: 1048576, archEstimated: true, ctxNote: '官方 1M · 1.6 万亿参数 · ⚠ 官方未公开 config，架构按 DeepSeekMoE 同源估算', src: 'https://modelscope.cn/models/deepseek-ai/DeepSeek-V4' },
+    { id: 'kimi-k2-thinking', name: 'Kimi-K2-Thinking', org: '月之暗面', family: 'Kimi', dense: false, totalB: 1040, activeB: 32, layers: 61, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 64, hiddenSize: 7168, maxCtx: 262144, ctxNote: '官方 256K · MLA · 推理模型(长思维链)', src: 'https://modelscope.cn/models/MoonshotAI/Kimi-K2-Thinking' },
+    { id: 'kimi-k3', name: 'Kimi-K3', org: '月之暗面', family: 'Kimi', dense: false, totalB: 2780, activeB: 104, layers: 93, mla: true, kvLoraRank: 512, ropeDim: 64, attnHeads: 96, hiddenSize: 7168, maxCtx: 1048576, ctxNote: '官方 1M · 2.78 万亿参数 / 激活 1042 亿 · 896 专家 Top-16 · 混合注意力(24 全注意力 + 69 KDA)', src: 'https://modelscope.cn/models/MoonshotAI/Kimi-K3' },
+    { id: 'hunyuan-a13b', name: 'Hunyuan-A13B', org: '腾讯', family: '混元', dense: false, totalB: 80, activeB: 7, layers: 32, kvHeads: 8, headDim: 128, attnHeads: 32, hiddenSize: 4096, maxCtx: 262144, ctxNote: '官方 256K · 64 专家 + 共享专家', src: 'https://modelscope.cn/models/Tencent-Hunyuan/Hunyuan-A13B-Instruct' },
+    { id: 'baichuan-m2', name: 'Baichuan-M2-32B', org: '百川智能', family: 'Baichuan', dense: true, totalB: 32.8, activeB: null, layers: 64, kvHeads: 8, headDim: 128, attnHeads: 40, hiddenSize: 5120, maxCtx: 131072, ctxNote: '医疗增强 · 官方 128K · 可 4090 单卡 INT4 部署', src: 'https://modelscope.cn/models/baichuan-inc/Baichuan-M2-32B' },
+    { id: 'seed-oss', name: 'Seed-OSS-36B', org: '字节跳动', family: 'Seed', dense: true, totalB: 36.2, activeB: null, layers: 64, kvHeads: 8, headDim: 128, attnHeads: 80, hiddenSize: 5120, maxCtx: 524288, ctxNote: '官方 512K · 发布 config 为稠密架构(36.2B)', src: 'https://hf-mirror.com/ByteDance-Seed/Seed-OSS-36B-Instruct' },
+    { id: 'minicpm4', name: 'MiniCPM4-8B', org: '面壁智能', family: 'MiniCPM', dense: true, totalB: 8.2, activeB: null, layers: 32, kvHeads: 2, headDim: 128, attnHeads: 32, hiddenSize: 4096, maxCtx: 32768, ctxNote: '官方 32K · 端侧/边缘友好', src: 'https://modelscope.cn/models/openbmb/MiniCPM4-8B' }
+  ];
+
+  // ---- GPU 数据（官方规格表） ----
+  // memGB 显存, memGBs 显存带宽 GB/s, fp16/fp8/int8/fp4 稠密 TFLOPS(0=不支持),
+  // nvlinkGBs 卡间 NVLink/XGMI 带宽(0=无), pcieGen, tdpW
+  export const GPUS = [
+    { id: 'h100',   name: 'NVIDIA H100 SXM',   vendor: 'NVIDIA', gen: 'Hopper',   memGB: 80,  memGBs: 3350, fp16: 989,  fp8: 1979, int8: 1979, fp4: 0,    fp4Native: false, nvlinkGBs: 900,  pcieGen: 5, tdpW: 700, datacenter: true,  note: 'NVLink4 900GB/s · NVSwitch 全互联', src: 'https://www.nvidia.com/en-us/data-center/h100/' },
+    { id: 'h200',   name: 'NVIDIA H200 SXM',   vendor: 'NVIDIA', gen: 'Hopper',   memGB: 141, memGBs: 4800, fp16: 989,  fp8: 1979, int8: 1979, fp4: 0,    fp4Native: false, nvlinkGBs: 900,  pcieGen: 5, tdpW: 700, datacenter: true,  note: '141GB HBM3e · NVLink4 900GB/s', src: 'https://www.nvidia.com/en-us/data-center/h200/' },
+    { id: 'h20',    name: 'NVIDIA H20',        vendor: 'NVIDIA', gen: 'Hopper',   memGB: 96,  memGBs: 4000, fp16: 148,  fp8: 296,  int8: 296,  fp4: 0,    fp4Native: false, nvlinkGBs: 900,  pcieGen: 5, tdpW: 400, datacenter: true,  note: '中国特供 · 算力受限但带宽/互联完整', src: 'https://www.nvidia.com/en-us/data-center/h20/' },
+    { id: 'a100',   name: 'NVIDIA A100 80GB',  vendor: 'NVIDIA', gen: 'Ampere',  memGB: 80,  memGBs: 2039, fp16: 312,  fp8: 0,    int8: 624,  fp4: 0,    fp4Native: false, nvlinkGBs: 600,  pcieGen: 4, tdpW: 400, datacenter: true,  note: '无 FP8 支持 · NVLink3 600GB/s', src: 'https://www.nvidia.com/en-us/data-center/a100/' },
+    { id: 'b200',   name: 'NVIDIA B200 SXM',   vendor: 'NVIDIA', gen: 'Blackwell', memGB: 192, memGBs: 8000, fp16: 2250, fp8: 4500, int8: 4500, fp4: 9000, fp4Native: true, nvlinkGBs: 1800, pcieGen: 5, tdpW: 1000, datacenter: true, note: '192GB HBM3e · NVLink5 1.8TB/s · FP4 原生', src: 'https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/' },
+    { id: 'mi300x', name: 'AMD Instinct MI300X', vendor: 'AMD', gen: 'CDNA3',   memGB: 192, memGBs: 5300, fp16: 1307, fp8: 2614, int8: 2614, fp4: 0,    fp4Native: false, nvlinkGBs: 896,  pcieGen: 5, tdpW: 750, datacenter: true,  note: '192GB HBM3 · XGMI 896GB/s', src: 'https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html' },
+    { id: 'l40s',   name: 'NVIDIA L40S',       vendor: 'NVIDIA', gen: 'Ada',     memGB: 48,  memGBs: 864,  fp16: 362,  fp8: 733,  int8: 733,  fp4: 0,    fp4Native: false, nvlinkGBs: 0,    pcieGen: 4, tdpW: 350, datacenter: true,  note: '无 NVLink · PCIe 4.0', src: 'https://www.nvidia.com/en-us/data-center/l40s/' },
+    { id: 'rtx5090', name: 'RTX 5090',         vendor: 'NVIDIA', gen: 'Blackwell', memGB: 32, memGBs: 1792, fp16: 419,  fp8: 838,  int8: 838,  fp4: 1676, fp4Native: true, nvlinkGBs: 0,    pcieGen: 5, tdpW: 575, datacenter: false, note: '32GB GDDR7 · 无 NVLink · FP4 原生', src: 'https://www.nvidia.com/en-us/geforce/graphics-cards/rtx-50-series/rtx-5090/' },
+    { id: 'rtx4090', name: 'RTX 4090',         vendor: 'NVIDIA', gen: 'Ada',     memGB: 24,  memGBs: 1008, fp16: 330,  fp8: 660,  int8: 660,  fp4: 0,    fp4Native: false, nvlinkGBs: 0,    pcieGen: 4, tdpW: 450, datacenter: false, note: '24GB GDDR6X · 无 NVLink · PCIe 4.0', src: 'https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/' },
+    { id: 'rtx3090', name: 'RTX 3090',         vendor: 'NVIDIA', gen: 'Ampere',  memGB: 24,  memGBs: 936,  fp16: 142,  fp8: 0,    int8: 284,  fp4: 0,    fp4Native: false, nvlinkGBs: 0,    pcieGen: 4, tdpW: 350, datacenter: false, note: '无 FP8 支持 · PCIe 4.0', src: 'https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3090-3090ti/' },
+
+    // ---- 国产 NPU / 加速卡（昇腾、平头哥、海光、昆仑芯、寒武纪、天数、沐曦、摩尔线程） ----
+    { id: 'ascend910b', name: '昇腾 910B', vendor: '华为昇腾', gen: 'DaVinci', memGB: 64, memGBs: 1600, fp16: 376, fp8: 0, int8: 752, fp4: 0, fp4Native: false, link: 'HCCS', nvlinkGBs: 392, pcieGen: 5, tdpW: 400, datacenter: true, ecosystem: 'npu', note: '典型机型 Atlas 800I A2（8 卡 HCCS 全互联）；FP16 各来源口径 376~600T，取华为 Atlas 官方值；无 FP8', src: 'https://e.huawei.com/cn/products/computing/ascend' },
+    { id: 'ascend910c', name: '昇腾 910C', vendor: '华为昇腾', gen: 'DaVinci', memGB: 96, memGBs: 1800, fp16: 800, fp8: 1600, int8: 1600, fp4: 0, fp4Native: false, link: 'HCCS', nvlinkGBs: 400, pcieGen: 5, tdpW: 600, datacenter: true, ecosystem: 'npu', note: '典型机型 CloudMatrix 384 超节点；FP8 原生支持', src: 'https://e.huawei.com/cn/products/computing/ascend' },
+    { id: 'ascend950', name: '昇腾 950PR (Atlas 350)', vendor: '华为昇腾', gen: 'DaVinci', memGB: 112, memGBs: 1400, fp16: 780, fp8: 1560, int8: 1560, fp4: 1953, fp4Native: true, link: '灵衢', nvlinkGBs: 1200, pcieGen: 5, tdpW: 600, datacenter: true, ecosystem: 'npu', note: 'FP8/FP4 为官方口径(1024 卡 2EF FP4)；卡间灵衢带宽官方未公布，取 ~1.2TB/s 估算；需液冷', src: 'https://e.huawei.com/cn/news/2026/solutions/computing/atlas-950-superpod' },
+    { id: 'hanguang800', name: '平头哥 含光 800', vendor: '平头哥', gen: '自研 NPU', memGB: 16, memGBs: 200, fp16: 0, fp8: 0, int8: 256, fp4: 0, fp4Native: false, link: null, nvlinkGBs: 0, pcieGen: 4, tdpW: 160, datacenter: true, ecosystem: 'npu', note: '2019 年 INT8 推理 NPU(78563 IPS/ResNet-50)；仅 INT8/INT4 可用；显存/带宽官方未公开，为推算值(~)；面向 CNN 推理，非大模型主流选择', src: 'https://www.tmtpost.com/4160179.html' },
+    { id: 'hygon-z100', name: '海光 DCU Z100', vendor: '海光', gen: 'DCU', memGB: 64, memGBs: 933, fp16: 256, fp8: 512, int8: 1024, fp4: 0, fp4Native: false, link: null, nvlinkGBs: 0, pcieGen: 5, tdpW: 350, datacenter: true, ecosystem: 'npu', note: 'ROCm 兼容生态；FP16 按 FP8 半速核算(~256T)；互联规格未公开，按 PCIe 保守估算', src: 'https://blog.ailemon.net/2025/10/31/national-ai-chip-param-info-collection/' },
+    { id: 'kunlun-p800', name: '昆仑芯 P800', vendor: '昆仑芯', gen: 'XPU-P/R', memGB: 64, memGBs: 768, fp16: 160, fp8: 320, int8: 1280, fp4: 0, fp4Native: false, link: null, nvlinkGBs: 0, pcieGen: 5, tdpW: 300, datacenter: true, ecosystem: 'npu', note: '百度文心原生适配；FP16 按 FP8 半速核算(~160T)；多卡互联规格未公开，按 PCIe 保守估算', src: 'https://www.iotdt.com/news/xingyezixun/2355.html' },
+    { id: 'cambricon-mlu590', name: '寒武纪 思元 MLU590', vendor: '寒武纪', gen: 'MLUarch', memGB: 96, memGBs: 2760, fp16: 157, fp8: 0, int8: 314, fp4: 0, fp4Native: false, link: null, nvlinkGBs: 0, pcieGen: 5, tdpW: 350, datacenter: true, ecosystem: 'npu', note: 'FP16/功耗官方未完整公开，按 INT8 半速与同代水平估算(~)；互联规格未公开', src: 'https://blog.ailemon.net/2025/10/31/national-ai-chip-param-info-collection/' },
+    { id: 'iluvatar-ti150', name: '天数智芯 天垓 150', vendor: '天数智芯', gen: 'GPGPU', memGB: 64, memGBs: 1600, fp16: 192, fp8: 0, int8: 384, fp4: 0, fp4Native: false, link: null, nvlinkGBs: 0, pcieGen: 4, tdpW: 350, datacenter: true, ecosystem: 'npu', note: 'FP16 按 INT8 半速核算(~192T)；互联规格未公开，按 PCIe 保守估算', src: 'https://blog.ailemon.net/2025/10/31/national-ai-chip-param-info-collection/' },
+    { id: 'metax-c500', name: '沐曦 曦云 C500', vendor: '沐曦', gen: 'MXC', memGB: 64, memGBs: 1800, fp16: 280, fp8: 0, int8: 560, fp4: 0, fp4Native: false, link: null, nvlinkGBs: 0, pcieGen: 5, tdpW: 450, datacenter: true, ecosystem: 'npu', note: '互联规格未公开，按 PCIe 保守估算', src: 'https://blog.ailemon.net/2025/10/31/national-ai-chip-param-info-collection/' },
+    { id: 'mtt-s5000', name: '摩尔线程 MTT S5000', vendor: '摩尔线程', gen: '平湖 MUSA', memGB: 64, memGBs: 819, fp16: 500, fp8: 1000, int8: 2048, fp4: 0, fp4Native: false, link: null, nvlinkGBs: 0, pcieGen: 5, tdpW: 400, datacenter: true, ecosystem: 'npu', note: 'MUSA 生态，TorchAda CUDA 迁移；互联规格未公开，按 PCIe 保守估算', src: 'https://www.iotdt.com/news/xingyezixun/2355.html' }
+  ];
+
+  // ---- 精度选项 ----
+  export const PRECISIONS = [
+    { id: 'fp32', label: 'FP32',    bytes: 4,   note: '4B/参数 · 推理极少用（按 TF32 估算）' },
+    { id: 'bf16', label: 'BF16/FP16', bytes: 2, note: '2B/参数 · 与训练同精度，最稳妥' },
+    { id: 'fp8',  label: 'FP8',     bytes: 1,   note: '1B/参数 · Hopper/Ada/Blackwell/MI300X 原生' },
+    { id: 'int8', label: 'INT8',    bytes: 1,   note: '1B/参数 · Tensor Core 原生' },
+    { id: 'int4', label: 'INT4 (AWQ/GPTQ)', bytes: 0.5, note: '0.5B/参数 · 反量化路径' },
+    { id: 'fp4',  label: 'FP4',     bytes: 0.5, note: '0.5B/参数 · 仅 Blackwell 原生' }
+  ];
+
+  export const INTER_OPTIONS = [
+    { id: 'none',   label: '单机 / 无节点间互联' },
+    { id: 'ib400',  label: 'InfiniBand 400G×8 ≈ 400 GB/s/节点' },
+    { id: 'ib800',  label: 'InfiniBand 800G×8 ≈ 800 GB/s/节点' },
+    { id: 'roce100', label: 'RoCE 100G×8 ≈ 100 GB/s/节点' },
+    { id: 'roce200', label: 'RoCE 200G×8 ≈ 200 GB/s/节点' },
+    { id: 'custom', label: '自定义节点上行带宽' }
+  ];
+
+  export const NODE_COUNTS = [1, 2, 4, 8];
+
+
+  export function byId(list, id) {
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
+  }

@@ -1,0 +1,45 @@
+{
+  "name": "dsh-model-deploy",
+  "version": "1.0.0",
+  "description": "DeepSeek Harness plugin: LLM model selection & deployment analysis (deployability, VRAM, TTFT, latency, throughput, power for 38 models × 20 GPUs/NPUs)",
+  "type": "module",
+  "license": "MIT",
+  "author": "lhl",
+  "engines": {
+    "node": ">=22.19"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "llm",
+    "model-selection",
+    "deployment",
+    "capacity-planning",
+    "gpu",
+    "npu",
+    "ascend"
+  ],
+  "exports": {
+    ".": "./dsh/index.js",
+    "./dsh": "./dsh/index.js",
+    "./engine": "./dsh/engine.js",
+    "./data": "./dsh/data.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dsh",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

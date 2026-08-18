@@ -1,0 +1,4 @@
+# dsh bundle 层：挂载 dsh-model-deploy 插件（dsh/index.js，经 package.json exports）
+- insert:
+    - id: model-deploy
+      name: 'dsh-model-deploy'
