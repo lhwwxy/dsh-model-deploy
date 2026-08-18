@@ -1,6 +1,6 @@
 {
   "name": "dsh-model-deploy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "DeepSeek Harness plugin: LLM model selection & deployment analysis (deployability, VRAM, TTFT, latency, throughput, power for 38 models × 20 GPUs/NPUs)",
   "type": "module",
   "license": "MIT",
